@@ -1,0 +1,260 @@
+{
+  "info": {
+    "name": "Solana Token Fraud Detector",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Base Endpoint",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            ""
+          ]
+        },
+        "description": "Basic API health check"
+      },
+      "response": []
+    },
+    {
+      "name": "API Status",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/status",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "status"
+          ]
+        },
+        "description": "Check API service status including Helius and LLM API keys"
+      },
+      "response": []
+    },
+    {
+      "name": "Analyze Token (wSOL)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/analyze/So11111111111111111111111111111111111111112",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "analyze",
+            "So11111111111111111111111111111111111111112"
+          ]
+        },
+        "description": "Analyze wSOL token"
+      },
+      "response": []
+    },
+    {
+      "name": "Analyze Token (USDC)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/analyze/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "analyze",
+            "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+          ]
+        },
+        "description": "Analyze USDC token"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Token Transactions (wSOL)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/transactions/So11111111111111111111111111111111111111112?limit=5",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "transactions",
+            "So11111111111111111111111111111111111111112"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "5"
+            }
+          ]
+        },
+        "description": "Get recent transactions for wSOL token"
+      },
+      "response": []
+    },
+    {
+      "name": "LLM Analysis (wSOL)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/llm-analysis/So11111111111111111111111111111111111111112",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "llm-analysis",
+            "So11111111111111111111111111111111111111112"
+          ]
+        },
+        "description": "Get LLM-powered analysis for wSOL token"
+      },
+      "response": []
+    },
+    {
+      "name": "Check if Token is Verified",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/is-verified/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "is-verified",
+            "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v"
+          ]
+        },
+        "description": "Check if a token is in the verified token list"
+      },
+      "response": []
+    },
+    {
+      "name": "Get Verified Tokens Info",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/verified-tokens-info",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "verified-tokens-info"
+          ]
+        },
+        "description": "Get information about the verified token list"
+      },
+      "response": []
+    },
+    {
+      "name": "Data JSON Test",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/data-json-test",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "data-json-test"
+          ]
+        },
+        "description": "Test loading transaction data from data.json file"
+      },
+      "response": []
+    },
+    {
+      "name": "wSOL Raw Transactions",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/wsol-raw-transactions?limit=3",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "wsol-raw-transactions"
+          ],
+          "query": [
+            {
+              "key": "limit",
+              "value": "3"
+            }
+          ]
+        },
+        "description": "Get raw transaction data for wSOL token"
+      },
+      "response": []
+    },
+    {
+      "name": "Force Fresh Analysis (wSOL)",
+      "request": {
+        "method": "GET",
+        "url": {
+          "raw": "http://localhost:3001/api/tokens/analyze/So11111111111111111111111111111111111111112?forceFresh=true",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "3001",
+          "path": [
+            "api",
+            "tokens",
+            "analyze",
+            "So11111111111111111111111111111111111111112"
+          ],
+          "query": [
+            {
+              "key": "forceFresh",
+              "value": "true"
+            }
+          ]
+        },
+        "description": "Force fresh analysis of wSOL token (bypass cache)"
+      },
+      "response": []
+    }
+  ]
+} 
