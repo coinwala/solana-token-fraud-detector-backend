@@ -4,7 +4,6 @@ import { isValidSolanaAddress } from '../utils/solanaConnector';
 import axios from 'axios';
 import config from '../config';
 
-// Create singleton instance
 const tokenAnalysisService = new TokenAnalysisService();
 
 export const analyzeToken = async (req: Request, res: Response): Promise<void> => {
@@ -95,5 +94,4 @@ export const getTokenTransactions = async (req: Request, res: Response): Promise
   }
 };
 
-// Export service instance for other modules to use
 export { tokenAnalysisService };

@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import { analyzeToken, getTokenTransactions } from '../controllers/tokenController';
 import { getLLMAnalysis } from '../controllers/llmController';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { TokenAnalysisService } from '../services/tokenAnalysisService';
 import { fetchSolanaTokenList, isVerifiedToken } from '../utils/tokenListProvider';
+import { getTokenCreationInfo } from '../utils/solanaConnector';
 
 const router = Router();
 const transactionMonitoring = new TokenAnalysisService()['transactionMonitoring'];
@@ -71,7 +72,7 @@ router.get('/data-json-test', async (req, res) => {
       transactions: transactions.slice(0, 5)
     });
   } catch (error) {
-    console.error('Error testing data.json:', error);
+    // console.error('Error testing data.json:', error);
     res.status(500).json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
@@ -84,7 +85,7 @@ router.get('/wsol-raw-transactions', async (req, res) => {
     const dataFilePath = path.resolve(process.cwd(), 'data.json');
     
     if (fs.existsSync(dataFilePath)) {
-      console.log('Using local data.json file for wSOL transactions');
+      // console.log('Using local data.json file for wSOL transactions');
       const rawData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
       const limit = parseInt(req.query.limit as string || '10', 10);
       
@@ -106,12 +107,42 @@ router.get('/wsol-raw-transactions', async (req, res) => {
       data: response.data
     });
   } catch (error) {
-    console.error('Error fetching raw wSOL transactions:', error);
+    // console.error('Error fetching raw wSOL transactions:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'Failed to get wSOL raw transactions'
     });
   }
 });
+
+// Token creation info handler
+async function getTokenCreationInfoHandler(req: Request, res: Response): Promise<void> {
+  try {
+    const { tokenAddress } = req.params;
+    
+    const creationInfo = await getTokenCreationInfo(tokenAddress);
+    
+    if (!creationInfo) {
+      res.status(404).json({
+        success: false,
+        message: 'Token creation information not found'
+      });
+      return;
+    }
+    
+    res.json({
+      success: true,
+      data: creationInfo
+    });
+  } catch (error) {
+    // console.error('Error fetching token creation info:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'Unknown error'
+    });
+  }
+}
+
+router.get('/token-creation-info/:tokenAddress', getTokenCreationInfoHandler);
 
 export default router;

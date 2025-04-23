@@ -39,10 +39,10 @@ export class TransactionMonitoringService extends EventEmitter {
      
       this.activeSubscriptions.set(tokenAddress, subscriptionId);
       
-      console.log(`Started monitoring transactions for token: ${tokenAddress}`);
+      // console.log(`Started monitoring transactions for token: ${tokenAddress}`);
       return true;
     } catch (error) {
-      console.error(`Error starting transaction monitoring for ${tokenAddress}:`, error);
+      // console.error(`Error starting transaction monitoring for ${tokenAddress}:`, error);
       return false;
     }
   }
@@ -54,12 +54,12 @@ export class TransactionMonitoringService extends EventEmitter {
       if (subscriptionId !== undefined) {
         connection.removeAccountChangeListener(subscriptionId);
         this.activeSubscriptions.delete(tokenAddress);
-        console.log(`Stopped monitoring transactions for token: ${tokenAddress}`);
+        // console.log(`Stopped monitoring transactions for token: ${tokenAddress}`);
       }
       
       return true;
     } catch (error) {
-      console.error(`Error stopping transaction monitoring for ${tokenAddress}:`, error);
+      // console.error(`Error stopping transaction monitoring for ${tokenAddress}:`, error);
       return false;
     }
   }
@@ -75,7 +75,7 @@ export class TransactionMonitoringService extends EventEmitter {
         });
       }
     } catch (error) {
-      console.error(`Error fetching transactions for ${tokenAddress}:`, error);
+      // console.error(`Error fetching transactions for ${tokenAddress}:`, error);
     }
   }
 
@@ -111,7 +111,7 @@ amount: '0',
         transaction,
       });
     } catch (error) {
-      console.error(`Error processing transaction for ${tokenAddress}:`, error);
+      // console.error(`Error processing transaction for ${tokenAddress}:`, error);
     }
   }
 
@@ -119,10 +119,10 @@ amount: '0',
     try {
       try {
         const dataFilePath = path.resolve(process.cwd(), 'data.json');
-        console.log('Attempting to read from:', dataFilePath);
+        // console.log('Attempting to read from:', dataFilePath);
         
         if (fs.existsSync(dataFilePath)) {
-          console.log('Using local data.json file for transactions');
+          // console.log('Using local data.json file for transactions');
           const localData = JSON.parse(fs.readFileSync(dataFilePath, 'utf8'));
 
           const transactions: TokenTransaction[] = localData.map((tx: any) => ({
@@ -136,16 +136,16 @@ amount: '0',
             source: tx.source || '',
           }));
           
-          console.log(`Found ${transactions.length} transactions in local data file`);
+          // console.log(`Found ${transactions.length} transactions in local data file`);
           return transactions.slice(0, limit);
         } else {
-          console.log('data.json file not found at:', dataFilePath);
+          // console.log('data.json file not found at:', dataFilePath);
         }
       } catch (fileError) {
-        console.error('Error reading from data.json, falling back to API:', fileError);
+        // console.error('Error reading from data.json, falling back to API:', fileError);
       }
 
-      console.log(`Fetching transactions for token ${tokenAddress} from Helius API`);
+      // console.log(`Fetching transactions for token ${tokenAddress} from Helius API`);
 
       if (tokenAddress === 'So11111111111111111111111111111111111111112') {
         const response = await axios.get(
@@ -153,7 +153,7 @@ amount: '0',
         );
 
         if (!response.data || !Array.isArray(response.data)) {
-          console.warn(`Invalid response from Helius API for ${tokenAddress}:`, response.data);
+          // console.warn(`Invalid response from Helius API for ${tokenAddress}:`, response.data);
           return [];
         }
 
@@ -176,7 +176,7 @@ amount: '0',
       );
 
       if (!response.data || !Array.isArray(response.data)) {
-        console.warn(`Invalid response from Helius API for ${tokenAddress}:`, response.data);
+        // console.warn(`Invalid response from Helius API for ${tokenAddress}:`, response.data);
         return [];
       }
 
@@ -191,7 +191,7 @@ amount: '0',
       
       return transactions;
     } catch (error) {
-      console.error(`Error getting recent transactions for ${tokenAddress}:`, error);
+      // console.error(`Error getting recent transactions for ${tokenAddress}:`, error);
       return [];
     }
   }

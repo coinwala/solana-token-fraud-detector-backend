@@ -32,14 +32,14 @@ export async function testHeliusConnection(): Promise<boolean> {
     );
     
     if (response.data && response.status === 200) {
-      console.log('Helius connection successful:', response.data);
+      // console.log('Helius connection successful:', response.data);
       return true;
     } else {
-      console.error('Invalid Helius API response:', response.data);
+      // console.error('Invalid Helius API response:', response.data);
       return false;
     }
   } catch (error) {
-    console.error('Error testing Helius connection:', error);
+    // console.error('Error testing Helius connection:', error);
     return false;
   }
 }
@@ -56,7 +56,7 @@ export function isValidSolanaAddress(address: string): boolean {
 export async function getTokenMetadata(tokenAddress: string): Promise<any> {
   try {
     if (KNOWN_TOKENS[tokenAddress]) {
-      console.log(`Using hardcoded metadata for known token: ${tokenAddress}`);
+      // console.log(`Using hardcoded metadata for known token: ${tokenAddress}`);
       return {
         ...KNOWN_TOKENS[tokenAddress],
         address: tokenAddress,
@@ -80,7 +80,7 @@ export async function getTokenMetadata(tokenAddress: string): Promise<any> {
     
     return null;
   } catch (error) {
-    console.error('Error fetching token metadata:', error);
+    // console.error('Error fetching token metadata:', error);
 
     if (KNOWN_TOKENS[tokenAddress]) {
       return {
@@ -98,7 +98,7 @@ export async function getTokenMintInfo(tokenAddress: string): Promise<Mint | nul
     const mintPublicKey = new PublicKey(tokenAddress);
     return await getMint(connection, mintPublicKey);
   } catch (error) {
-    console.error('Error fetching token mint info:', error);
+    // console.error('Error fetching token mint info:', error);
 
     if (error instanceof Error && error.name === 'TokenInvalidAccountOwnerError') {
       try {
@@ -115,7 +115,7 @@ export async function getTokenMintInfo(tokenAddress: string): Promise<Mint | nul
           };
         }
       } catch (secondError) {
-        console.error('Error getting fallback account info:', secondError);
+        // console.error('Error getting fallback account info:', secondError);
       }
     }
     
@@ -125,21 +125,48 @@ export async function getTokenMintInfo(tokenAddress: string): Promise<Mint | nul
 
 export async function getTokenCreationInfo(tokenAddress: string): Promise<any> {
   try {
-    const response = await axios.get(
-      `https://api.helius.xyz/v0/addresses/${tokenAddress}/transactions?api-key=${config.heliusApiKey}`
-    );
-
-    if (response.data && Array.isArray(response.data) && response.data.length > 0) {
-      const creationTx = response.data[0];
+    // We need to paginate through all transactions to find the oldest one
+    let oldestTransaction = null;
+    let beforeSignature: string | undefined = undefined;
+    const limit = 100; // Number of transactions per request
+    
+    while (true) {
+      // Build URL with optional pagination
+      let url = `https://api.helius.xyz/v0/addresses/${tokenAddress}/transactions?api-key=${config.heliusApiKey}&limit=${limit}`;
+      if (beforeSignature) {
+        url += `&before=${beforeSignature}`;
+      }
+      
+      const response = await axios.get(url);
+      
+      if (!response.data || !Array.isArray(response.data) || response.data.length === 0) {
+        break; // No more transactions
+      }
+      
+      // The last item in each batch is the oldest in that batch
+      const lastTx = response.data[response.data.length - 1];
+      oldestTransaction = lastTx;
+      
+      // Set up for the next batch
+      beforeSignature = lastTx.signature;
+      
+      // If we got fewer than the limit, we've reached the end
+      if (response.data.length < limit) {
+        break;
+      }
+    }
+    
+    if (oldestTransaction) {
       return {
-        createdAt: new Date(creationTx.timestamp * 1000).toISOString(),
-        creatorAddress: creationTx.feePayer,
-        signature: creationTx.signature,
+        createdAt: new Date(oldestTransaction.timestamp * 1000).toISOString(),
+        creatorAddress: oldestTransaction.feePayer,
+        signature: oldestTransaction.signature,
       };
     }
+    
     return null;
   } catch (error) {
-    console.error('Error fetching token creation info:', error);
+    // console.error('Error fetching token creation info:', error);
     return null;
   }
 }
