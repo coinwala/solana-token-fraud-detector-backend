@@ -120,7 +120,7 @@ async function getTokenCreationInfoHandler(req: Request, res: Response): Promise
   try {
     const { tokenAddress } = req.params;
     
-    const creationInfo = await getTokenCreationInfo(tokenAddress);
+    const creationInfo = await getTokenCreationInfo( tokenAddress);
     
     if (!creationInfo) {
       res.status(404).json({
